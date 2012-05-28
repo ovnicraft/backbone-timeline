@@ -1,0 +1,3 @@
+src/coffee:build/js
+src/less:build/css
+src/jade:build
