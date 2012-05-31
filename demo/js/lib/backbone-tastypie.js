@@ -1,0 +1,1 @@
+../../../dist/backbone-tastypie.js

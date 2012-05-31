@@ -22,15 +22,16 @@
         });
         this.layout = new Backbone.LayoutManager({
           template: "#timeline",
-          baseURL: this.baseURL,
           views: {
             ".editor": new this.timeline.views.PostEditorView(),
             ".posts": new this.timeline.views.PostListView({
-              collection: this.posts
+              collection: this.posts,
+              itemViewClass: this.timeline.views.PostView
             })
           }
         });
         this.layout.$el.appendTo(".bb-timeline");
+        this.layout.render();
         return this.posts.fetch();
       };
       return App;

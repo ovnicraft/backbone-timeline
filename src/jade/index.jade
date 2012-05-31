@@ -5,8 +5,9 @@ html(lang="en")
     script(type="text/javascript", src="js/lib/json2.js")
     script(type="text/javascript", src="js/lib/underscore-min.js")
     script(type="text/javascript", src="js/lib/jquery-1.7.2.min.js")
-    script(type="text/javascript", src="js/lib/backbone-min.js")
-    script(type="text/javascript", src="js/lib/backbone.layoutmanager.min.js")
+    script(type="text/javascript", src="js/lib/backbone.js")
+    script(type="text/javascript", src="js/lib/backbone-tastypie.js")
+    script(type="text/javascript", src="js/lib/backbone.layoutmanager.js")
     script(type="text/javascript", src="js/lib/backbone.extensions.js")
     script(type="text/javascript", data-main="js/main", src="js/lib/require.js")
     body
@@ -14,7 +15,16 @@ html(lang="en")
       #main.bb-timeline
 
     script#timeline(type="text/template")
-      h2 I'm a timeline
       .editor
-      h3 These are my posts
       .posts
+
+    script#PostList(type="text/template")
+      h3 These are my posts
+      .items
+
+    script#Post(type="text/template")
+      h3 <%= data.emitter %>
+      p <%= data.data %>
+
+    script#PostEditor(type="text/template")
+      h2 I'm the editor

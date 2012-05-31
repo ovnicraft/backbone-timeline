@@ -10,7 +10,7 @@
   define(function() {
     var PostEditorView, PostListView, PostView;
     PostView = (function() {
-      __extends(PostView, Backbone.View);
+      __extends(PostView, Backbone.extensions.View);
       function PostView() {
         PostView.__super__.constructor.apply(this, arguments);
       }
@@ -24,7 +24,7 @@
       return PostListView;
     })();
     PostEditorView = (function() {
-      __extends(PostEditorView, Backbone.View);
+      __extends(PostEditorView, Backbone.extensions.View);
       function PostEditorView() {
         PostEditorView.__super__.constructor.apply(this, arguments);
       }
