@@ -1,9 +1,9 @@
 define ()->
-  class PostView extends Backbone.View
+  class PostView extends Backbone.extensions.View
 
   class PostListView extends Backbone.extensions.CollectionView
 
-  class PostEditorView extends Backbone.View
+  class PostEditorView extends Backbone.extensions.View
 
   return {
     PostView
