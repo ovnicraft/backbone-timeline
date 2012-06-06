@@ -1,3 +1,0 @@
-[submodule "dist/backbone-extensions"]
-	path = dist/backbone-extensions
-	url = http://github.com/Unholster/backbone-extensions.git
