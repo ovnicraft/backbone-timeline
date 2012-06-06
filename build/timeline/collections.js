@@ -8,16 +8,20 @@
     return child;
   };
   define(function() {
-    var Post;
-    Post = (function() {
-      __extends(Post, Backbone.Model);
-      function Post() {
-        Post.__super__.constructor.apply(this, arguments);
+    var Posts;
+    Posts = (function() {
+      __extends(Posts, Backbone.extensions.Collection);
+      function Posts() {
+        Posts.__super__.constructor.apply(this, arguments);
       }
-      return Post;
+      Posts.prototype.url = "/post";
+      Posts.prototype.comparator = function(post) {
+        return post.get("created");
+      };
+      return Posts;
     })();
     return {
-      Post: Post
+      Posts: Posts
     };
   });
 }).call(this);

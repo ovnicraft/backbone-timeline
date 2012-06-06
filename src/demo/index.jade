@@ -1,0 +1,30 @@
+doctype 5
+html(lang="en")
+  head
+    title Backbone Timeline Demo
+    script(type="text/javascript", src="lib/json2.js")
+    script(type="text/javascript", src="lib/underscore-min.js")
+    script(type="text/javascript", src="lib/jquery-1.7.2.min.js")
+    script(type="text/javascript", src="lib/backbone.js")
+    script(type="text/javascript", src="lib/backbone-tastypie.js")
+    script(type="text/javascript", src="lib/backbone.layoutmanager.js")
+    script(type="text/javascript", src="lib/backbone.extensions.js")
+    script(type="text/javascript", data-main="main", src="lib/require.js")
+    body
+      h1 Backbone Timeline Demo
+      #main.bb-timeline
+
+    script#timeline(type="text/template")
+      .editor
+      .posts
+
+    script#PostListView(type="text/template")
+      h3 These are my posts
+      .items
+
+    script#PostView(type="text/template")
+      h3 <%= data.emitter %>
+      p <%= data.data %>
+
+    script#PostEditorView(type="text/template")
+      h2 I'm the editor

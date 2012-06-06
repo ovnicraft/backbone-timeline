@@ -15,6 +15,9 @@
         Posts.__super__.constructor.apply(this, arguments);
       }
       Posts.prototype.url = "/post";
+      Posts.prototype.comparator = function(post) {
+        return post.get("created");
+      };
       return Posts;
     })();
     return {

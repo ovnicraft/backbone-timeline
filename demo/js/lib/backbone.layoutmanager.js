@@ -1,1 +1,0 @@
-../../../dist/backbone.layoutmanager.js
