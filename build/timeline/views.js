@@ -16,19 +16,25 @@
       }
       return PostView;
     })();
-    PostListView = (function() {
-      __extends(PostListView, Backbone.extensions.CollectionView);
-      function PostListView() {
-        PostListView.__super__.constructor.apply(this, arguments);
-      }
-      return PostListView;
-    })();
     PostEditorView = (function() {
       __extends(PostEditorView, Backbone.extensions.View);
       function PostEditorView() {
         PostEditorView.__super__.constructor.apply(this, arguments);
       }
       return PostEditorView;
+    })();
+    PostListView = (function() {
+      __extends(PostListView, Backbone.extensions.CollectionView);
+      function PostListView() {
+        PostListView.__super__.constructor.apply(this, arguments);
+      }
+      PostListView.prototype.itemViewClass = PostView;
+      PostListView.prototype.render = function(manage) {
+        PostListView.__super__.render.call(this, manage);
+        this.setView(".editor", new PostEditorView());
+        return manage(this).render();
+      };
+      return PostListView;
     })();
     return {
       PostView: PostView,
