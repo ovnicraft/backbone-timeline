@@ -7,13 +7,14 @@
     child.__super__ = parent.prototype;
     return child;
   };
-  define(function() {
+  define(["./models"], function(models) {
     var Posts;
     Posts = (function() {
       __extends(Posts, Backbone.extensions.Collection);
       function Posts() {
         Posts.__super__.constructor.apply(this, arguments);
       }
+      Posts.prototype.model = models.Post;
       Posts.prototype.url = "/post";
       Posts.prototype.comparator = function(post) {
         return post.get("created");
