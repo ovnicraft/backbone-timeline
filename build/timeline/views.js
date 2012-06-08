@@ -21,6 +21,34 @@
       function PostEditorView() {
         PostEditorView.__super__.constructor.apply(this, arguments);
       }
+      PostEditorView.prototype.events = {
+        "click .js-send": "sendPost"
+      };
+      PostEditorView.prototype.sendPost = function(event) {
+        var $data, data;
+        $data = this.$(".js-data");
+        if ($data) {
+          data = $data.val() || $data.text();
+          if (data) {
+            return this.collection.create({
+              data: data,
+              context: this.context
+            }, {
+              wait: true
+            });
+          }
+        }
+      };
+      PostEditorView.prototype.initialize = function(options) {
+        PostEditorView.__super__.initialize.call(this, options);
+        if (options.context != null) {
+          this.context = options.context;
+          delete options.context;
+        }
+        if (options.collection != null) {
+          return this.collection = options.collection;
+        }
+      };
       return PostEditorView;
     })();
     PostListView = (function() {
@@ -29,9 +57,19 @@
         PostListView.__super__.constructor.apply(this, arguments);
       }
       PostListView.prototype.itemViewClass = PostView;
+      PostListView.prototype.initialize = function(options) {
+        PostListView.__super__.initialize.call(this, options);
+        if (options.context != null) {
+          this.context = options.context;
+          return delete options.context;
+        }
+      };
       PostListView.prototype.render = function(manage) {
         PostListView.__super__.render.call(this, manage);
-        this.setView(".editor", new PostEditorView());
+        this.setView(".editor", new PostEditorView({
+          context: this.context,
+          collection: this.collection
+        }));
         return manage(this).render();
       };
       return PostListView;
