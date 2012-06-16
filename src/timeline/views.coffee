@@ -1,5 +1,6 @@
 define ()->
   class PostView extends Backbone.extensions.View
+    tagName: "li"
 
   class PostEditorView extends Backbone.extensions.View
     events:
