@@ -13,6 +13,8 @@
         return PostView.__super__.constructor.apply(this, arguments);
       }
 
+      PostView.prototype.tagName = "li";
+
       return PostView;
 
     })(Backbone.extensions.View);
