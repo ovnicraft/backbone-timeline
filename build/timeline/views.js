@@ -80,10 +80,12 @@
 
       PostListView.prototype.render = function(manage) {
         PostListView.__super__.render.call(this, manage);
-        this.setView(".editor", new PostEditorView({
-          context: this.context,
-          collection: this.collection
-        }));
+        if (app.session.isActive()) {
+          this.setView(".editor", new PostEditorView({
+            context: this.context,
+            collection: this.collection
+          }));
+        }
         return manage(this).render();
       };
 

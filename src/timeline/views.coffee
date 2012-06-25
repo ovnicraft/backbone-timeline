@@ -32,9 +32,12 @@ define ()->
 
     render: (manage)->
       super manage
-      @setView ".editor", new PostEditorView 
-        context:@context
-        collection:@collection
+
+      if app.session.isActive()
+        @setView ".editor", new PostEditorView 
+          context:@context
+          collection:@collection
+          
       return manage(@).render()
 
   return {
