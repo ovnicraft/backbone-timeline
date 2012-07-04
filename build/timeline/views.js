@@ -68,6 +68,8 @@
         return PostListView.__super__.constructor.apply(this, arguments);
       }
 
+      PostListView.prototype.infiniteScroll = true;
+
       PostListView.prototype.itemViewClass = PostView;
 
       PostListView.prototype.initialize = function(options) {

@@ -22,6 +22,7 @@ define ()->
         @collection = options.collection
 
   class PostListView extends Backbone.extensions.CollectionView
+    infiniteScroll:true
     itemViewClass:PostView
 
     initialize: (options)->
