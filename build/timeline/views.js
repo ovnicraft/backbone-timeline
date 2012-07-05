@@ -15,6 +15,18 @@
 
       PostView.prototype.tagName = "li";
 
+      PostView.prototype.render = function(manage) {
+        var _this = this;
+        return manage(this).render().then(function() {
+          var time;
+          time = _this.model.getCreatedTime();
+          _this.$el.find(".date").text(time.toString());
+          return time.onChange = function(diff, remainingTime) {
+            return _this.$el.find(".date").text(remainingTime.toString());
+          };
+        });
+      };
+
       return PostView;
 
     })(Backbone.extensions.View);
@@ -80,7 +92,17 @@
         }
       };
 
+      PostListView.prototype.renderModel = function(model, bulk) {
+        var _base;
+        if (bulk == null) {
+          bulk = false;
+        }
+        PostListView.__super__.renderModel.call(this, model, bulk);
+        return typeof (_base = this.$el.find(".alert")).remove === "function" ? _base.remove() : void 0;
+      };
+
       PostListView.prototype.render = function(manage) {
+        var _this = this;
         PostListView.__super__.render.call(this, manage);
         if (app.session.isActive()) {
           this.setView(".editor", new PostEditorView({
@@ -88,7 +110,14 @@
             collection: this.collection
           }));
         }
-        return manage(this).render();
+        return manage(this).render().then(function() {
+          var _base;
+          if (_this.collection.length === 0) {
+            return _this.$el.find(".items").before('<div class="alert">¡S&eacute; el primero en comentar!</div>');
+          } else {
+            return typeof (_base = _this.$el.find(".alert")).remove === "function" ? _base.remove() : void 0;
+          }
+        });
       };
 
       return PostListView;

@@ -2,6 +2,14 @@ define ()->
   class PostView extends Backbone.extensions.View
     tagName: "li"
 
+    render : (manage) ->
+      manage(@).render().then =>
+        time = @model.getCreatedTime()
+        @$el.find(".date").text time.toString()
+
+        time.onChange = (diff, remainingTime) =>
+          @$el.find(".date").text remainingTime.toString()
+
   class PostEditorView extends Backbone.extensions.View
     events:
       "click .js-send": "sendPost"
@@ -31,6 +39,10 @@ define ()->
         @context = options.context
         delete options.context
 
+    renderModel : (model, bulk = false) ->
+      super model, bulk
+      @$el.find(".alert").remove?()
+
     render: (manage)->
       super manage
 
@@ -39,7 +51,11 @@ define ()->
           context:@context
           collection:@collection
           
-      return manage(@).render()
+      return manage(@).render().then =>
+        if @collection.length == 0
+          @$el.find(".items").before '<div class="alert">¡S&eacute; el primero en comentar!</div>'
+        else
+          @$el.find(".alert").remove?()
 
   return {
     PostView
