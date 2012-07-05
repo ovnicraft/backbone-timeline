@@ -22,12 +22,29 @@ define ()->
           @collection.create {data:data, context:@context}, wait:true
 
     initialize: (options)->
+      _.bindAll @
+      
       super options
       if options.context?
         @context = options.context
         delete options.context
       if options.collection?
         @collection = options.collection
+
+      @$el.on "charsleft", "textarea", @checkSubmitButton
+
+    cleanup : ->
+      @$el.off "charsleft", "textarea", @checkSubmitButton
+
+    checkSubmitButton : (event, invalid) ->
+      @$el.find("button[type=submit]").prop "disabled", invalid
+
+    render : (manage) ->
+      manage(@).render().then =>
+        @$el.find("textarea").characterCounter
+          maxlength : 200
+          target : @$el.find("#character-count-holder")
+
 
   class PostListView extends Backbone.extensions.CollectionView
     infiniteScroll:true

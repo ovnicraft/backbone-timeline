@@ -59,14 +59,34 @@
       };
 
       PostEditorView.prototype.initialize = function(options) {
+        _.bindAll(this);
         PostEditorView.__super__.initialize.call(this, options);
         if (options.context != null) {
           this.context = options.context;
           delete options.context;
         }
         if (options.collection != null) {
-          return this.collection = options.collection;
+          this.collection = options.collection;
         }
+        return this.$el.on("charsleft", "textarea", this.checkSubmitButton);
+      };
+
+      PostEditorView.prototype.cleanup = function() {
+        return this.$el.off("charsleft", "textarea", this.checkSubmitButton);
+      };
+
+      PostEditorView.prototype.checkSubmitButton = function(event, invalid) {
+        return this.$el.find("button[type=submit]").prop("disabled", invalid);
+      };
+
+      PostEditorView.prototype.render = function(manage) {
+        var _this = this;
+        return manage(this).render().then(function() {
+          return _this.$el.find("textarea").characterCounter({
+            maxlength: 200,
+            target: _this.$el.find("#character-count-holder")
+          });
+        });
       };
 
       return PostEditorView;
