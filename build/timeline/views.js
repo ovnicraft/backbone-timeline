@@ -48,12 +48,13 @@
         if ($data) {
           data = $data.val() || $data.text();
           if (data) {
-            return this.collection.create({
+            this.collection.create({
               data: data,
               context: this.context
             }, {
               wait: true
             });
+            return $data.val("").focus();
           }
         }
       };

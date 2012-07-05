@@ -20,6 +20,7 @@ define ()->
         data = $data.val() or $data.text()
         if data
           @collection.create {data:data, context:@context}, wait:true
+          $data.val("").focus()
 
     initialize: (options)->
       _.bindAll @
