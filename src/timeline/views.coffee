@@ -43,7 +43,7 @@ define ()->
     render : (manage) ->
       manage(@).render().then =>
         @$el.find("textarea").characterCounter
-          maxlength : 200
+          maxlength : 140
           target : @$el.find("#character-count-holder")
 
 
