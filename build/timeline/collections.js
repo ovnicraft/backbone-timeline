@@ -15,7 +15,7 @@
 
       Posts.prototype.model = models.Post;
 
-      Posts.prototype.url = "/post";
+      Posts.prototype.url = "/post/";
 
       Posts.prototype.comparator = function(post) {
         return post.get("created");

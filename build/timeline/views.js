@@ -84,7 +84,7 @@
         var _this = this;
         return manage(this).render().then(function() {
           return _this.$el.find("textarea").characterCounter({
-            maxlength: 200,
+            maxlength: 140,
             target: _this.$el.find("#character-count-holder")
           });
         });

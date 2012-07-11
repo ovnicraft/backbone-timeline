@@ -1,7 +1,7 @@
 define ["./models"], (models)->
   class Posts extends Backbone.extensions.Collection
     model: models.Post
-    url: "/post"
+    url: "/post/"
 
     comparator: (post)->
       post.get "created"
