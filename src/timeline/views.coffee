@@ -70,7 +70,9 @@ define ()->
           collection:@collection
           
       return manage(@).render().then =>
-        if @collection.length == 0
+        if @collection.isFetching
+          @$el.find(".items").html "<li class=\"loading\"><img src=\"#{app.STATIC_URL}img/loading-small.gif\" /></li>"
+        else if @collection.length == 0
           @$el.find(".items").before '<div class="alert">¡S&eacute; el primero en comentar!</div>'
         else
           @$el.find(".alert").remove?()
