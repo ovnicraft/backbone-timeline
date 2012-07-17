@@ -15,6 +15,10 @@
 
       PostView.prototype.tagName = "li";
 
+      PostView.prototype.template = "#PostView";
+
+      PostView.prototype.className = "PostView";
+
       PostView.prototype.render = function(manage) {
         var _this = this;
         return manage(this).render().then(function() {
@@ -37,6 +41,10 @@
       function PostEditorView() {
         return PostEditorView.__super__.constructor.apply(this, arguments);
       }
+
+      PostEditorView.prototype.template = "#PostEditorView";
+
+      PostEditorView.prototype.className = "PostEditorView";
 
       PostEditorView.prototype.events = {
         "click .js-send": "sendPost"
@@ -100,6 +108,10 @@
       function PostListView() {
         return PostListView.__super__.constructor.apply(this, arguments);
       }
+
+      PostListView.prototype.template = "#PostListView";
+
+      PostListView.prototype.className = "PostListView";
 
       PostListView.prototype.infiniteScroll = true;
 

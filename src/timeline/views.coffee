@@ -1,6 +1,8 @@
 define ()->
   class PostView extends Backbone.extensions.View
     tagName: "li"
+    template : "#PostView"
+    className : "PostView"
 
     render : (manage) ->
       manage(@).render().then =>
@@ -11,6 +13,8 @@ define ()->
           @$el.find(".date").text remainingTime.toString()
 
   class PostEditorView extends Backbone.extensions.View
+    template : "#PostEditorView"
+    className : "PostEditorView"
     events:
       "click .js-send": "sendPost"
 
@@ -48,6 +52,8 @@ define ()->
 
 
   class PostListView extends Backbone.extensions.CollectionView
+    template : "#PostListView"
+    className : "PostListView"
     infiniteScroll:true
     itemViewClass:PostView
 
