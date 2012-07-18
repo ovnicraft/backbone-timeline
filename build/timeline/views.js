@@ -130,6 +130,7 @@
         if (bulk == null) {
           bulk = false;
         }
+        this.$el.find(".items").show();
         PostListView.__super__.renderModel.call(this, model, bulk);
         return typeof (_base = this.$el.find(".alert")).remove === "function" ? _base.remove() : void 0;
       };
@@ -148,7 +149,7 @@
           if (_this.collection.isFetching) {
             return _this.$el.find(".items").html("<li class=\"loading\"><img src=\"" + app.STATIC_URL + "img/loading-small.gif\" /></li>");
           } else if (_this.collection.length === 0) {
-            return _this.$el.find(".items").before('<div class="alert">¡S&eacute; el primero en comentar!</div>');
+            return _this.$el.find(".items").hide().before('<div class="alert">¡S&eacute; el primero en comentar!</div>');
           } else {
             return typeof (_base = _this.$el.find(".alert")).remove === "function" ? _base.remove() : void 0;
           }
