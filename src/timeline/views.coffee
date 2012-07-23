@@ -4,6 +4,20 @@ define ()->
     template : "#PostView"
     className : "PostView"
 
+    initialize : ->
+      _.bindAll @
+      super()
+
+      if app.session.isActive() and app.session.user.id == @model.get("user").id
+        app.session.user.on "change:profile_pic_url", @onChange
+
+    cleanup : ->
+      if app.session.isActive() and app.session.user.id == @model.get("user").id
+        app.session.user.off "change:profile_pic_url", @onChange
+
+    onChange : ->
+      @render()
+
     render : (manage) ->
       manage(@).render().then =>
         time = @model.getCreatedTime()

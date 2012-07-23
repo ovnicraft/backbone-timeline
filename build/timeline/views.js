@@ -19,6 +19,24 @@
 
       PostView.prototype.className = "PostView";
 
+      PostView.prototype.initialize = function() {
+        _.bindAll(this);
+        PostView.__super__.initialize.call(this);
+        if (app.session.isActive() && app.session.user.id === this.model.get("user").id) {
+          return app.session.user.on("change:profile_pic_url", this.onChange);
+        }
+      };
+
+      PostView.prototype.cleanup = function() {
+        if (app.session.isActive() && app.session.user.id === this.model.get("user").id) {
+          return app.session.user.off("change:profile_pic_url", this.onChange);
+        }
+      };
+
+      PostView.prototype.onChange = function() {
+        return this.render();
+      };
+
       PostView.prototype.render = function(manage) {
         var _this = this;
         return manage(this).render().then(function() {
