@@ -19,6 +19,10 @@
 
       PostView.prototype.className = "PostView";
 
+      PostView.prototype.events = {
+        "click .remove": "deletePost"
+      };
+
       PostView.prototype.initialize = function() {
         _.bindAll(this);
         PostView.__super__.initialize.call(this);
@@ -31,6 +35,14 @@
         if (app.session.isActive() && app.session.user.id === this.model.get("user").id) {
           return app.session.user.off("change:profile_pic_url", this.onChange);
         }
+      };
+
+      PostView.prototype.deletePost = function() {
+        var _this = this;
+        this.model.destroy();
+        return this.$el.fadeOut(function() {
+          return _this.remove();
+        });
       };
 
       PostView.prototype.onChange = function() {

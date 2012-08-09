@@ -3,6 +3,8 @@ define ()->
     tagName: "li"
     template : "#PostView"
     className : "PostView"
+    events :
+      "click .remove" : "deletePost"
 
     initialize : ->
       _.bindAll @
@@ -14,6 +16,11 @@ define ()->
     cleanup : ->
       if app.session.isActive() and app.session.user.id == @model.get("user").id
         app.session.user.off "change:profile_pic_url", @onChange
+
+    deletePost : ->
+      @model.destroy()
+      @$el.fadeOut =>
+        @remove()
 
     onChange : ->
       @render()
