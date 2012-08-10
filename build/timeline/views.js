@@ -149,6 +149,11 @@
 
       PostListView.prototype.initialize = function(options) {
         PostListView.__super__.initialize.call(this, options);
+        this.loadMoreConfig = {
+          tagName: "li",
+          loadMore: "Cargar m&aacute;s comentarios",
+          loadingMore: "<img src=\"" + app.STATIC_URL + "img/loading-small.gif\" /> Cargando comentarios&hellip;"
+        };
         if (options.context != null) {
           this.context = options.context;
           return delete options.context;

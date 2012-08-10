@@ -80,6 +80,12 @@ define ()->
 
     initialize: (options)->
       super options
+
+      @loadMoreConfig =
+        tagName : "li"
+        loadMore : "Cargar m&aacute;s comentarios"
+        loadingMore : """<img src="#{app.STATIC_URL}img/loading-small.gif" /> Cargando comentarios&hellip;"""
+
       if options.context?
         @context = options.context
         delete options.context
@@ -99,7 +105,7 @@ define ()->
           
       return manage(@).render().then =>
         if @collection.isFetching
-          @$el.find(".items").html "<li class=\"loading\"><img src=\"#{app.STATIC_URL}img/loading-small.gif\" /></li>"
+          @$el.find(".items").html """<li class="loading"><img src="#{app.STATIC_URL}img/loading-small.gif" /></li>"""
         else if @collection.length == 0
           @$el.find(".items").hide().before '<div class="alert">¡S&eacute; el primero en comentar!</div>'
         else
