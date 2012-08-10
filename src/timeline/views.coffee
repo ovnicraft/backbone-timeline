@@ -19,7 +19,7 @@ define ()->
 
     deletePost : ->
       @model.destroy()
-      @$el.fadeOut =>
+      @$el.slideUp =>
         @remove()
 
     onChange : ->

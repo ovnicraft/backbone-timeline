@@ -40,7 +40,7 @@
       PostView.prototype.deletePost = function() {
         var _this = this;
         this.model.destroy();
-        return this.$el.fadeOut(function() {
+        return this.$el.slideUp(function() {
           return _this.remove();
         });
       };
