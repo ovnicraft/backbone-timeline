@@ -4,7 +4,7 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   define(function() {
-    var PostEditorView, PostListView, PostView;
+    var PostEditorView, PostListView, PostView, TimelineView;
     PostView = (function(_super) {
 
       __extends(PostView, _super);
@@ -13,57 +13,48 @@
         return PostView.__super__.constructor.apply(this, arguments);
       }
 
-      PostView.prototype.tagName = "li";
-
       PostView.prototype.template = "#PostView";
 
       PostView.prototype.className = "PostView";
+
+      PostView.prototype.tagName = "li";
 
       PostView.prototype.events = {
         "click .remove": "deletePost"
       };
 
       PostView.prototype.initialize = function() {
-        _.bindAll(this);
-        PostView.__super__.initialize.call(this);
-        if (app.session.isActive() && app.session.user.id === this.model.get("user").id) {
-          return app.session.user.on("change:profile_pic_url", this.onChange);
+        if (app.session.isOwner(this.model.get("user").id)) {
+          return this.bindTo(app.session.user, "change:profile_pic_url", this.render);
         }
       };
 
-      PostView.prototype.cleanup = function() {
-        if (app.session.isActive() && app.session.user.id === this.model.get("user").id) {
-          return app.session.user.off("change:profile_pic_url", this.onChange);
-        }
+      PostView.prototype.serializeData = function() {
+        return $.extend(this.model.toJSON(), {
+          createdTime: this.model.getCreatedTime()
+        });
       };
 
       PostView.prototype.deletePost = function() {
         var _this = this;
-        this.model.destroy();
         return this.$el.slideUp(function() {
-          return _this.remove();
+          return _this.model.destroy();
         });
       };
 
-      PostView.prototype.onChange = function() {
-        return this.render();
-      };
-
-      PostView.prototype.render = function(manage) {
-        var _this = this;
-        return manage(this).render().then(function() {
-          var time;
-          time = _this.model.getCreatedTime();
-          _this.$el.find(".date").text(time.toString());
-          return time.onChange = function(diff, remainingTime) {
-            return _this.$el.find(".date").text(remainingTime.toString());
-          };
-        });
+      PostView.prototype.onRender = function() {
+        var time,
+          _this = this;
+        time = this.model.getCreatedTime();
+        this.$el.find(".date").text(time.toString());
+        return time.onChange = function(diff, remainingTime) {
+          return _this.$el.find(".date").text(remainingTime.toString());
+        };
       };
 
       return PostView;
 
-    })(Backbone.extensions.View);
+    })(Backbone.Marionette.ItemView);
     PostEditorView = (function(_super) {
 
       __extends(PostEditorView, _super);
@@ -77,13 +68,14 @@
       PostEditorView.prototype.className = "PostEditorView";
 
       PostEditorView.prototype.events = {
-        "click .js-send": "sendPost"
+        "click .js-send": "sendPost",
+        "charsleft textarea": "checkSubmitButton"
       };
 
       PostEditorView.prototype.sendPost = function(event) {
         var $data, data;
         $data = this.$(".js-data");
-        if ($data) {
+        if ($data.length) {
           data = $data.val() || $data.text();
           if (data) {
             this.collection.create({
@@ -97,40 +89,20 @@
         }
       };
 
-      PostEditorView.prototype.initialize = function(options) {
-        _.bindAll(this);
-        PostEditorView.__super__.initialize.call(this, options);
-        if (options.context != null) {
-          this.context = options.context;
-          delete options.context;
-        }
-        if (options.collection != null) {
-          this.collection = options.collection;
-        }
-        return this.$el.on("charsleft", "textarea", this.checkSubmitButton);
-      };
-
-      PostEditorView.prototype.cleanup = function() {
-        return this.$el.off("charsleft", "textarea", this.checkSubmitButton);
-      };
-
       PostEditorView.prototype.checkSubmitButton = function(event, invalid) {
         return this.$el.find("button[type=submit]").prop("disabled", invalid);
       };
 
-      PostEditorView.prototype.render = function(manage) {
-        var _this = this;
-        return manage(this).render().then(function() {
-          return _this.$el.find("textarea").characterCounter({
-            maxlength: 140,
-            target: _this.$el.find("#character-count-holder")
-          });
+      PostEditorView.prototype.onRender = function() {
+        return this.$el.find("textarea").characterCounter({
+          maxlength: 140,
+          target: this.$el.find("#character-count-holder")
         });
       };
 
       return PostEditorView;
 
-    })(Backbone.extensions.View);
+    })(Backbone.Marionette.ItemView);
     PostListView = (function(_super) {
 
       __extends(PostListView, _super);
@@ -139,65 +111,94 @@
         return PostListView.__super__.constructor.apply(this, arguments);
       }
 
-      PostListView.prototype.template = "#PostListView";
+      PostListView.prototype.tagName = "ul";
 
-      PostListView.prototype.className = "PostListView";
+      PostListView.prototype.className = "PostListView post-list sidebar-list";
 
       PostListView.prototype.infiniteScroll = true;
 
-      PostListView.prototype.itemViewClass = PostView;
+      PostListView.prototype.itemView = PostView;
+
+      PostListView.prototype.template = function() {};
 
       PostListView.prototype.initialize = function(options) {
         PostListView.__super__.initialize.call(this, options);
-        this.loadMoreConfig = {
+        return this.loadMoreConfig = {
           tagName: "li",
           loadMore: "Cargar m&aacute;s comentarios",
           loadingMore: "<img src=\"" + app.STATIC_URL + "img/loading-small.gif\" /> Cargando comentarios&hellip;"
         };
-        if (options.context != null) {
-          this.context = options.context;
-          return delete options.context;
+      };
+
+      PostListView.prototype.appendHtml = function(collectionView, itemView, index) {
+        if (index === 0) {
+          return this.$el.prepend(itemView.$el);
+        } else {
+          return this.$el.find(">:eq(" + (index - 1) + ")").after(itemView.$el);
         }
       };
 
-      PostListView.prototype.renderModel = function(model, bulk) {
+      PostListView.prototype.onItemAdded = function() {
         var _base;
-        if (bulk == null) {
-          bulk = false;
-        }
-        this.$el.find(".items").show();
-        PostListView.__super__.renderModel.call(this, model, bulk);
-        return typeof (_base = this.$el.find(".alert")).remove === "function" ? _base.remove() : void 0;
+        return typeof (_base = this.$el.show().prev(".alert")).remove === "function" ? _base.remove() : void 0;
       };
 
-      PostListView.prototype.render = function(manage) {
-        var _this = this;
-        PostListView.__super__.render.call(this, manage);
-        if (app.session.isActive()) {
-          this.setView(".editor", new PostEditorView({
-            context: this.context,
-            collection: this.collection
-          }));
+      PostListView.prototype.onRender = function() {
+        var _base, _base1;
+        if (this.collection.isFetching) {
+          return this.$el.show().html("<li class=\"loading\"><img src=\"" + app.STATIC_URL + "img/loading-small.gif\" /></li>");
         }
-        return manage(this).render().then(function() {
-          var _base;
-          if (_this.collection.isFetching) {
-            return _this.$el.find(".items").html("<li class=\"loading\"><img src=\"" + app.STATIC_URL + "img/loading-small.gif\" /></li>");
-          } else if (_this.collection.length === 0) {
-            return _this.$el.find(".items").hide().before('<div class="alert">¡S&eacute; el primero en comentar!</div>');
-          } else {
-            return typeof (_base = _this.$el.find(".alert")).remove === "function" ? _base.remove() : void 0;
-          }
-        });
+        if (typeof (_base = this.$el.find("> .loading")).remove === "function") {
+          _base.remove();
+        }
+        if (this.collection.length === 0) {
+          return this.$el.hide().before('<div class="alert">¡S&eacute; el primero en comentar!</div>');
+        } else {
+          return typeof (_base1 = this.$el.prev(".alert")).remove === "function" ? _base1.remove() : void 0;
+        }
       };
 
       return PostListView;
 
     })(Backbone.extensions.CollectionView);
+    TimelineView = (function(_super) {
+
+      __extends(TimelineView, _super);
+
+      function TimelineView() {
+        return TimelineView.__super__.constructor.apply(this, arguments);
+      }
+
+      TimelineView.prototype.template = "#TimelineView";
+
+      TimelineView.prototype.className = "TimelineView";
+
+      TimelineView.prototype.regions = {
+        editor: ".editor",
+        timeline: ".timeline"
+      };
+
+      TimelineView.prototype.onRender = function() {
+        if (app.session.isActive()) {
+          this.editor.show(new PostEditorView({
+            context: this.options.context,
+            collection: this.options.collection
+          }));
+        }
+        return this.timeline.show(new PostListView({
+          context: this.options.context,
+          collection: this.options.collection
+        }));
+      };
+
+      return TimelineView;
+
+    })(Backbone.Marionette.Layout);
     return {
       PostView: PostView,
       PostListView: PostListView,
-      PostEditorView: PostEditorView
+      PostEditorView: PostEditorView,
+      TimelineView: TimelineView
     };
   });
 
