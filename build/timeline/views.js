@@ -80,7 +80,7 @@
           if (data) {
             this.collection.create({
               data: data,
-              context: this.context
+              context: this.options.context
             }, {
               wait: true
             });
@@ -186,7 +186,6 @@
           }));
         }
         return this.timeline.show(new PostListView({
-          context: this.options.context,
           collection: this.options.collection
         }));
       };

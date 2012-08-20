@@ -38,7 +38,7 @@ define () ->
       if $data.length
         data = $data.val() or $data.text()
         if data
-          @collection.create {data:data, context:@context}, wait:true
+          @collection.create {data:data, context:@options.context}, wait:true
           $data.val("").focus()
 
     checkSubmitButton: (event, invalid) ->
@@ -96,7 +96,7 @@ define () ->
     onRender: ->
       if app.session.isActive()
         @editor.show new PostEditorView context:@options.context, collection:@options.collection
-      @timeline.show new PostListView context:@options.context, collection:@options.collection
+      @timeline.show new PostListView collection:@options.collection
 
   return {
     PostView
