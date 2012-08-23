@@ -148,12 +148,17 @@
       PostListView.prototype.itemViewClass = PostView;
 
       PostListView.prototype.initialize = function(options) {
+        var _ref;
         PostListView.__super__.initialize.call(this, options);
         this.loadMoreConfig = {
           tagName: "li",
           loadMore: "Cargar m&aacute;s comentarios",
           loadingMore: "<img src=\"" + app.STATIC_URL + "img/loading-small.gif\" /> Cargando comentarios&hellip;"
         };
+        this.showEditor = true;
+        if (((_ref = this.options) != null ? _ref.showEditor : void 0) != null) {
+          this.showEditor = this.options.showEditor;
+        }
         if (options.context != null) {
           this.context = options.context;
           return delete options.context;
@@ -173,18 +178,19 @@
       PostListView.prototype.render = function(manage) {
         var _this = this;
         PostListView.__super__.render.call(this, manage);
-        if (app.session.isActive()) {
+        if (app.session.isActive() && this.showEditor) {
           this.setView(".editor", new PostEditorView({
             context: this.context,
             collection: this.collection
           }));
         }
         return manage(this).render().then(function() {
-          var _base;
+          var message, _base;
           if (_this.collection.isFetching) {
             return _this.$el.find(".items").html("<li class=\"loading\"><img src=\"" + app.STATIC_URL + "img/loading-small.gif\" /></li>");
           } else if (_this.collection.length === 0) {
-            return _this.$el.find(".items").hide().before('<div class="alert">¡S&eacute; el primero en comentar!</div>');
+            message = _this.showEditor ? "¡S&eacute; el primero en comentar!" : "No hay comentarios";
+            return _this.$el.find(".items").hide().before("<div class=\"alert\">" + message + "</div>");
           } else {
             return typeof (_base = _this.$el.find(".alert")).remove === "function" ? _base.remove() : void 0;
           }

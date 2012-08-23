@@ -86,6 +86,10 @@ define ()->
         loadMore : "Cargar m&aacute;s comentarios"
         loadingMore : """<img src="#{app.STATIC_URL}img/loading-small.gif" /> Cargando comentarios&hellip;"""
 
+      @showEditor = true
+      if @options?.showEditor?
+        @showEditor = @options.showEditor
+
       if options.context?
         @context = options.context
         delete options.context
@@ -98,7 +102,7 @@ define ()->
     render: (manage)->
       super manage
 
-      if app.session.isActive()
+      if app.session.isActive() and @showEditor
         @setView ".editor", new PostEditorView 
           context:@context
           collection:@collection
@@ -107,7 +111,10 @@ define ()->
         if @collection.isFetching
           @$el.find(".items").html """<li class="loading"><img src="#{app.STATIC_URL}img/loading-small.gif" /></li>"""
         else if @collection.length == 0
-          @$el.find(".items").hide().before '<div class="alert">¡S&eacute; el primero en comentar!</div>'
+          message =
+            if @showEditor then "¡S&eacute; el primero en comentar!"
+            else "No hay comentarios"
+          @$el.find(".items").hide().before """<div class="alert">#{message}</div>"""
         else
           @$el.find(".alert").remove?()
 
